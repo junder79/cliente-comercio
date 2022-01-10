@@ -32,13 +32,44 @@
             <label for="inputBuscar">Buscar</label>
             <input type="text" class="form-control" id="inputBuscar" placeholder="Example input placeholder">
           </div>
-       
+       <div id="selectCategorias"></div>
         <div id="myData"></div>
     
     </div>
        
   </div>
     <script>
+      $(document).ready(function () {
+        getCategorias();
+      });
+
+      
+      function getCategorias(){
+          fetch('http://localhost/api-rest/public/categorias')
+            .then(function (response) {
+               
+               
+               return response.json();
+              
+            })
+            .then(function (data) {
+              let output = '<select class="form-control" id="categorias"> <option value="" selected disabled>Seleccione</option>';
+              for (var i = 0; i < data.length; i++) {
+                output += `
+               
+                <option value="${data[i].id}">${data[i].name}</option>
+        `;
+       
+            }
+            output += '</select>'
+            document.getElementById('selectCategorias').innerHTML = output; 
+            })
+            .catch(function (err) {
+                console.log('error: ' + err);
+            });
+
+            
+        }
         $('#inputBuscar').change(function (e) { 
             e.preventDefault();
             var buscar = $(this).val();
@@ -78,6 +109,7 @@
             output += '</div>'
             document.getElementById('myData').innerHTML = output; 
         }
+
         });
         fetch('http://localhost/api-rest/public/buscar/pisco')
             .then(function (response) {
