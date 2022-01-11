@@ -28,12 +28,27 @@
 
   
     <div class="container">
-        <div class="form-group">
+       <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <div class="form-group">
             <label for="inputBuscar">Buscar</label>
-            <input type="text" class="form-control" id="inputBuscar" placeholder="Example input placeholder">
+            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar Producto">
           </div>
-       <div id="selectCategorias"></div>
-        <div id="myData"></div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+    <div class="form-group">
+      <div id="selectCategorias"></div>
+    </div>
+        </div>
+
+       
+       </div>
+       <div class="d-flex justify-content-center">
+        <div class="spinner-border"  id="preloader" style="width: 3rem; height: 3rem;display: none;" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+       </div>
+        <div id="dataPeticion"></div>
     
     </div>
        
@@ -41,16 +56,56 @@
     <script>
       $(document).ready(function () {
         getCategorias();
+        getProductos();
+      
       });
 
+      function getProductos(){
+        $('#preloader').css('display','block');
+        fetch('http://localhost/api-rest/public/productos')
+            .then(function (response) {
+               
+              $('#preloader').css('display','none');
+               return response.json();
+              
+            })
+            .then(function (data) {
+            
+                appendData(data);
+            })
+            .catch(function (err) {
+                console.log('error: ' + err);
+            });
+        function appendData(data) {
+            let output = '<div class="row">';
+            var mainContainer = document.getElementById("dataPeticion");
+            for (var i = 0; i < data.length; i++) {
+                output += `
+               
+          <div class='col-3'>
+            <div class="card ml-2 mt-2 " style="">
+        <img src="${data[i].url_image}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">${data[i].name}</h5>
+          <a href="#" class="btn btn-primary">${data[i].price}</a>
+        </div>
+      </div></div>
       
+        `;
+       
+            }
+            output += '</div>'
+            document.getElementById('dataPeticion').innerHTML = output; 
+        }
+      }
       function getCategorias(){
           fetch('http://localhost/api-rest/public/categorias')
             .then(function (response) {
+
                return response.json();              
             })
             .then(function (data) {
-              let output = ' <label for="categorias">Seleccione Tipo de Producto</label><select class="form-control categorias" onchange="selectCategorias(event)" id="categorias"> <option value="" selected disabled>Seleccione</option>';
+              let output = ' <label for="categorias">Seleccione Tipo de Producto</label><select class="form-control categorias" onchange="selectCategorias(event)" id="categorias"> <option value="" selected disabled>Seleccione</option><option value="0" >Mostrar Todo</option>';
               for (var i = 0; i < data.length; i++) {
                 output += `  
                 <option value="${data[i].id}">${data[i].name}</option>
@@ -67,13 +122,20 @@
         }
 
         function getCategoriasFiltrada(idCategoria){
+          $('#preloader').css('display','block');
+          $('#dataPeticion').html('');
+          if(idCategoria == 0 ){
+            getProductos();
+              return false;
+          }
           fetch('http://localhost/api-rest/public/filtradoCategorias/'+idCategoria)
             .then(function (response) {
+              $('#preloader').css('display','none');
                return response.json();              
             })
             .then(function (data) {
               let output = '<div class="row">';
-            var mainContainer = document.getElementById("myData");
+            var mainContainer = document.getElementById("dataPeticion");
             for (var i = 0; i < data.length; i++) {
                 output += `
                
@@ -82,7 +144,6 @@
         <img src="${data[i].url_image}" class="card-img-top" alt="...">
         <div class="card-body">
           <h5 class="card-title">${data[i].name}</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           <a href="#" class="btn btn-primary">${data[i].price}</a>
         </div>
       </div></div>
@@ -91,7 +152,7 @@
        
             }
             output += '</div>'
-            document.getElementById('myData').innerHTML = output; 
+            document.getElementById('dataPeticion').innerHTML = output; 
             })
             .catch(function (err) {
                 console.log('error: ' + err);
@@ -110,15 +171,20 @@
         $('#inputBuscar').change(function (e) { 
             e.preventDefault();
             var buscar = $(this).val();
-            document.getElementById('myData').innerHTML = ''; 
+            $('#preloader').css('display','block');
+            if(buscar == ''){
+              getProductos();
+            }else {
+              document.getElementById('dataPeticion').innerHTML = ''; 
             fetch('http://localhost/api-rest/public/buscar/'+buscar)
             .then(function (response) {
                
-               
+              $('#preloader').css('display','none');
                return response.json();
               
             })
             .then(function (data) {
+             
                 appendData(data);
             })
             .catch(function (err) {
@@ -126,7 +192,7 @@
             });
         function appendData(data) {
             let output = '<div class="row">';
-            var mainContainer = document.getElementById("myData");
+            var mainContainer = document.getElementById("dataPeticion");
             for (var i = 0; i < data.length; i++) {
                 output += `
                
@@ -135,7 +201,6 @@
         <img src="${data[i].url_image}" class="card-img-top" alt="...">
         <div class="card-body">
           <h5 class="card-title">${data[i].name}</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           <a href="#" class="btn btn-primary">${data[i].price}</a>
         </div>
       </div></div>
@@ -144,45 +209,13 @@
        
             }
             output += '</div>'
-            document.getElementById('myData').innerHTML = output; 
+            document.getElementById('dataPeticion').innerHTML = output; 
         }
+            }
+        
 
         });
-        fetch('http://localhost/api-rest/public/buscar/pisco')
-            .then(function (response) {
-               
-               
-               return response.json();
-              
-            })
-            .then(function (data) {
-                appendData(data);
-            })
-            .catch(function (err) {
-                console.log('error: ' + err);
-            });
-        function appendData(data) {
-            let output = '<div class="row">';
-            var mainContainer = document.getElementById("myData");
-            for (var i = 0; i < data.length; i++) {
-                output += `
-               
-          <div class='col-3'>
-            <div class="card ml-2 mt-2 " style="">
-        <img src="${data[i].url_image}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">${data[i].name}</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">${data[i].price}</a>
-        </div>
-      </div></div>
-      
-        `;
-       
-            }
-            output += '</div>'
-            document.getElementById('myData').innerHTML = output; 
-        }
+     
     </script>
   </body>
 </html>
