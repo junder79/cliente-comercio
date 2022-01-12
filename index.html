@@ -63,6 +63,27 @@
       
       });
 
+        // Funcion para el formateo de numero en este caso el valor
+        var formatNumber = {
+          separador: ".", // separador para los miles
+          sepDecimal: ',', // separador para los decimales
+          formatear: function (num) {
+            num += '';
+            var splitStr = num.split('.');
+            var splitLeft = splitStr[0];
+            var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+            var regx = /(\d+)(\d{3})/;
+            while (regx.test(splitLeft)) {
+              splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+            }
+            return this.simbol + splitLeft + splitRight;
+          },
+          new: function (num, simbol) {
+            this.simbol = simbol || '';
+            return this.formatear(num);
+          }
+        }
+
       function getProductos(){
         $('#preloader').css('display','block');
         fetch('https://api-rest-comercio-prueba.herokuapp.com/public/productos')
@@ -88,12 +109,12 @@
             for (var i = 0; i < data.length; i++) {
                 output += `
                
-          <div class='col-3'>
+          <div class='col-sm-12 col-md-3'>
             <div class="card ml-2 mt-2 " style="">
         <img src="${data[i].url_image}" class="card-img-top" alt="...">
         <div class="card-body">
           <h5 class="card-title">${data[i].name}</h5>
-          <a href="#" class="btn btn-primary">${data[i].price}</a>
+          <a href="#" class="btn btn-primary">${"$"+formatNumber.new(data[i].price) }</a>
         </div>
       </div></div>
       
