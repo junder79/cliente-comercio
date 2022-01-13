@@ -7,17 +7,15 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="./public/css/bootstrap.min.css" >
-
+  <script src="https://kit.fontawesome.com/e07e2fa348.js"></script>
     <title>Comercios</title>
   </head>
   <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">BF Sale</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
+  <div class="float-right">
+    <i class="fas fa-shopping-cart"></i>
+  </div>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
     </div>
@@ -113,8 +111,11 @@
             <div class="card ml-2 mt-2 " style="">
         <img src="${data[i].url_image}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title">${data[i].name}</h5>
-          <a href="#" class="btn btn-primary">${"$"+formatNumber.new(data[i].price) }</a>
+          <h7 class="card-title">${data[i].name}</h7>
+       <div class="row">
+          <div class="col-6"> <a href="#" class="btn btn-primary">${"$"+formatNumber.new(data[i].price)}</a></div>
+           <div class="col-6">  <i class="fas fa-cart-plus float-right"></i></div>
+          </div>
         </div>
       </div></div>
       
@@ -173,8 +174,11 @@
             <div class="card ml-2 mt-2 " style="">
         <img src="${data[i].url_image}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title">${data[i].name}</h5>
-          <a href="#" class="btn btn-primary">${data[i].price}</a>
+          <h7 class="card-title">${data[i].name}</h7>
+           <div class="row">
+          <div class="col-6"> <a href="#" class="btn btn-primary">${"$"+formatNumber.new(data[i].price)}</a></div>
+           <div class="col-6">  <i class="fas fa-cart-plus float-right"></i></div>
+          </div>
         </div>
       </div></div>
       
@@ -194,7 +198,7 @@
         // Funcion de evento change
 
         function selectCategorias(event) {
-
+$('#inputBuscar').val('');
       var elemento = event.target;
       var idCategoria = elemento.value;
       getCategoriasFiltrada(idCategoria);
@@ -232,8 +236,11 @@
             <div class="card ml-2 mt-2 " style="">
         <img src="${data[i].url_image}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title">${data[i].name}</h5>
-          <a href="#" class="btn btn-primary">${data[i].price}</a>
+          <h7 class="card-title">${data[i].name}</h7>
+            <div class="row">
+          <div class="col-6"> <a href="#" class="btn btn-primary">${"$"+formatNumber.new(data[i].price)}</a></div>
+           <div class="col-6">  <i class="fas fa-cart-plus float-right"></i></div>
+          </div>
         </div>
       </div></div>
       
